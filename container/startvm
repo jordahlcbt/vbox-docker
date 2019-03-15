@@ -1,0 +1,57 @@
+#!/bin/bash
+
+#
+#       Copyright 2019, CB Technologies, Inc., All rights reserved.
+#
+#   GPLv3 HEADER START
+#
+#       This file is part of vbox-docker.
+#
+#       vbox-docker is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       vbox-docker is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with vbox-docker.  If not, see <https://www.gnu.org/licenses/>.
+#
+#   GPLv3 HEADER END
+#
+#       Author: steve.jordahl@cbtechinc.com
+#
+#       Revisions:
+#         1.0  15-Mar-2019
+#
+
+# Register VM and get VMID
+. vmid
+#Tweak the VM config to enable VirtualBox Remote Display Protocol (VRDP) and change its port
+VAR=`echo $VRDE | tr '[:upper:]' '[:lower:]'`
+if [[ $VAR == "on" || $VAR == "yes" || $VAR == "true" || $VAR -eq 1 ]]
+then
+	echo Enabling VirtualBox VRDP on port $VBPORT...
+        VBoxManage modifyvm $VMID --vrde on --vrdeport $VBPORT
+else
+	echo VirtualBox VRDP DISABLED
+fi
+## Associate NIC1 of the VM to the host's default network interface
+VBoxManage modifyvm $VMID --nic1 bridged --bridgeadapter1 `netstat -r | grep default | tr -s " " | cut -d " " -f 8`
+
+# Enter any pre-start configuration here
+
+# Start the VM
+VBoxManage startvm $VMID --type headless
+
+# Enter any post-start configuration here
+
+# Wait and watch for the VM process to end so the container goes away at that time
+while [ $(VBoxManage showvminfo $VMID | grep State | tr -s " " | cut -d " " -f 2) == "running" ]
+do
+        sleep 15
+done
+

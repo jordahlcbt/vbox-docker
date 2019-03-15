@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#
+#       Copyright 2019, CB Technologies, Inc., All rights reserved.
+#
+#   GPLv3 HEADER START
+#
+#       This file is part of vbox-docker.
+#
+#       vbox-docker is free software: you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation, either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       vbox-docker is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with vbox-docker.  If not, see <https://www.gnu.org/licenses/>.
+#
+#   GPLv3 HEADER END
+#
+#       Author: steve.jordahl@cbtechinc.com
+#
+#       Revisions:
+#         1.0  15-Mar-2019
+#
+
+if [ $# -eq 0 ]
+  then
+    echo "The VM name|uuid must be supplied"
+    exit 1
+fi
+
+VMID=$1
+CTRLR=`VBoxManage showvminfo $VMID | grep "Storage Controller Name (0)" | cut -d ":" -f 2 | awk '{$1=$1;print}'`
+CTRLPORT=`VBoxManage showvminfo $VMID | grep "$CTRLR" | tail -n 1 | cut -d "," -f 1 | cut -d "(" -f 2`
+
+VBoxManage storageattach $VMID --storagectl "$CTRLR" --port $CTRLPORT --type dvddrive --medium /usr/share/virtualbox/VBoxGuestAdditions.iso
+VBoxManage showvminfo $VMID | grep "$CTRLR" | tail -n 1

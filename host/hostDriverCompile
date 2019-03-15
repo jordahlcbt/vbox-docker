@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#
+#	Copyright 2019, CB Technologies, Inc., All rights reserved.
+#
+#   GPLv3 HEADER START
+#
+#	This file is part of vbox-docker.
+#
+#	vbox-docker is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	vbox-docker is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with vbox-docker.  If not, see <https://www.gnu.org/licenses/>.
+#
+#   GPLv3 HEADER END
+#
+#	Author: steve.jordahl@cbtechinc.com
+#
+#       Revisions:
+#         1.0  15-Mar-2019
+#
+
+# Copy files from container
+sudo docker cp virtualbox:/usr/lib/virtualbox /usr/lib
+sudo docker cp virtualbox:/usr/share/virtualbox /usr/share
+# Add local group
+sudo groupadd vboxusers
+# Compile driver
+sudo /usr/lib/virtualbox/vboxdrv.sh setup
+# List the loaded virtualbox kernel modules
+lsmod | grep vbox
+# Remove the virtualbox files - NOT the kernel modules
+sudo rm -rf /usr/lib/virtualbox /usr/share/virtualbox/
