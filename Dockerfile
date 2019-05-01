@@ -37,7 +37,7 @@ RUN buildDeps=' \
 	' \
 	&& set -x \
 	&& mkdir -p /etc/xdg/QtProject \
-	&& apt update && apt upgrade -y && apt install -y \
+	&& apt-get update && apt-get upgrade -y && apt-get install -y \
 	curl \
 	less \
 	vim \
@@ -54,7 +54,7 @@ RUN buildDeps=' \
 	&& VBoxVer=`dpkg -s virtualbox-6.0 | grep "^Version" | cut -d " " -f 2 | cut -d "-" -f 1` \
 	&& curl --insecure https://download.virtualbox.org/virtualbox/$VBoxVer/Oracle_VM_VirtualBox_Extension_Pack-$VBoxVer.vbox-extpack --output /tmp/Oracle_VM_VirtualBox_Extension_Pack-$VBoxVer.vbox-extpack \
 	&& mkdir -p /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/ \
-	&& tar xzf /tmp/Oracle_VM_VirtualBox_Extension_Pack-6.0.4.vbox-extpack -C /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/ \
+	&& tar xzf /tmp/Oracle_VM_VirtualBox_Extension_Pack-$VBoxVer.vbox-extpack -C /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/ \
 	&& chmod -R o-w /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack \
 	&& apt-get purge -y --auto-remove $buildDeps \
 	&& rm -rf /var/lib/apt/lists/*
