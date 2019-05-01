@@ -1,4 +1,4 @@
 # vbox-docker
 ## VirtualBox Running in a Docker Container
 
-These files relate to [this blog](https://github.com/jordahlcbt/vbox-docker).
+These files relate to [this blog](https://www.cbtechninc.com/headless-virtualbox-in-a-docker-container).
